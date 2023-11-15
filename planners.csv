@@ -1,45 +1,34 @@
-2023-24,Computer Science B.S.
+2020-21,Computer Science B.S.
 Four-Year Plan for Students with Programming Experience
-,Fall,Winter,Spring,Summer
-Entering,,,,College 1A
-Entering,,,,Summer Edge (optional)
-Entering,,,,
-1st (frosh),CSE 30,CSE 12,CSE 16,
-1st (frosh),MATH 19A,MATH 19B,AM 10,
-1st (frosh),College 1,WRIT 1/WRIT 1E (if needed),,
-2nd (soph),CSE 13S,CSE 101,CSE 101M,
-2nd (soph),AM 30,CSE 107,ECE 30,
-2nd (soph),WRIT 2*,,,
-3rd (junior),CSE 102,CSE 130,CSE 103,
-3rd (junior),CSE 120,Elective,,
-3rd (junior),,,,
-4th (senior),Elective,CSE 114A,Capstone elective,
-4th (senior),DC elective,,,
+,Fall,Winter,Spring
+1st (frosh),CSE 30,CSE 12 & CSE 12L,CSE 16
+1st (frosh),MATH 19A,MATH 19B,AM 30
+1st (frosh),,,
+2nd (soph),CSE 13S,CSE 101,CSE 120
+2nd (soph),AM 10,CSE 107,
+2nd (soph),,,
+3rd (junior),CSE 130,CSE 102,CSE 103
+3rd (junior),Elective,Elective,
+3rd (junior),,,
+4th (senior),Elective,CSE 114,Capstone elective
+4th (senior),DC elective,,
 First-Year Plan for Students Without Programming Experience
-,Fall,Winter,Spring,Summer
-Entering,,,,College 1A
-Entering,,,,Summer Edge (optional)
-Entering,,,,
-1st (frosh),CSE 20,CSE 30,CSE 12,
-1st (frosh),MATH 3,MATH 19A,MATH 19B,
-1st (frosh),,WRIT 1/WRIT 1E (if needed),,
-2nd (soph),CSE 13S,AM 10,AM 30,
-2nd (soph),WRIT 2*,CSE 101,CSE 101M,
-2nd (soph),CSE 16,,,
-2nd (soph),,,,
-3rd (junior),CSE 120,CSE 102,CSE 103,
-3rd (junior),CSE 114A,CSE 107,ECE 30,
-3rd (junior),,,,
-4th (senior),CSE 130,Elective,Capstone elective,
-4th (senior),DC Elective,Elective,,
+,Fall,Winter,Spring
+1st (frosh),CSE 20,CSE 30,CSE 12 & CSE 12L
+1st (frosh),MATH 3,MATH 19A,MATH 19B
+1st (frosh),,,
+2nd (soph),CSE 13S,AM 30,CSE 101
+2nd (soph),AM 10,CSE 16,CSE 107
+2nd (soph),,,
+3rd (junior),CSE 102,CSE 103,CSE 120
+3rd (junior),Elective,Elective,DC-elective
+3rd (junior),,,
+4th (senior),CSE 112,CSE 130,Capstone elective
+4th (senior),Elective,,
 Two-Year Degree Planner for Transfer Students
-,Fall,Winter,Spring,Summer
-Entering,,,,KRSG 1T
-Entering,,,,Summer Edge (optional)
-Entering,,,,
-1st (junior),CSE 12,CSE 101,CSE 101M,
-1st (junior),AM 30,CSE 120,CSE 130,
-1st (junior),STAT 131,,,
-2nd (senior),CSE 103,CSE 102,Elective,
-2nd (senior),"CSE 114A
-			DC Elective",Elective,Capstone elective,
+,Fall,Winter,Spring
+1st (junior),CSE 12 & CSE 12L,CSE 102,CSE 130
+1st (junior),CSE 101,CSE 120,CSE 103
+1st (junior),AM 30,CSE 107,DC elective
+2nd (senior),CSE 114,Elective,Elective
+2nd (senior),Elective,Capstone elective,Elective
