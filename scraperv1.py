@@ -7,8 +7,7 @@ import unicodedata
 
 year = ['Entering', '1st (frosh)', '2nd (soph)', '3rd (junior)', '4th (senior)', '1st (junior)', '2nd (senior)', '2nd(senior)']
 
-url = 'https://catalog.ucsc.edu/current/general-catalog/academic-units/baskin-engineering/biomolecular-engineering/biomolecular-engineering-and-bioinformatics-bs/'
-#url = 'https://catalog.ucsc.edu/en/current/general-catalog/academic-units/baskin-engineering/computer-science-and-engineering/computer-science-bs/'
+url = 'https://catalog.ucsc.edu/en/current/general-catalog/academic-units/baskin-engineering/computer-science-and-engineering/computer-science-bs/'
 
 with sync_playwright() as p:
     browser = p.chromium.launch()
@@ -26,43 +25,40 @@ with open('planners.csv', 'w', newline='') as csvfile:
     main = soup.find("div", {"id":"main"})
     for tag in main:
         if "B.S." in tag.text or "B.A." in tag.text:
-            #print(tag.text)
             t = tag.text.strip("\n")
             year = t[0:7]
             tl = t.split('/ ')
-            #print(year, tl[4])
             plannerwriter.writerow([year, tl[4]])
             break
     parent = soup.find("div", {"id":"degree-req-2"})
-    current_year = ""
+    currentyear = ""
+    newYear = False
     for tag in parent:
         if tag.name == "h3" and tag.text[4:12] == "Planners":
             want = tag.next_sibling
             first_row = ['Fall', 'Winter', 'Spring', 'Summer']
             for child in want.descendants:
-                if (child.name) == "p" and ("plan" in child.text or "Plan" in child.text or "Concentration" in child.text) and (len(child.text) <= 100):
-                    plannername = child.text
-                    plannerwriter.writerow([plannername])
-                
+                if (child.name) == "p" and ("plan" in child.text or "Plan" in child.text) and (len(child.text) <= 100):
+                    plannerwriter.writerow([child.text])
                 if child.name == "table":
-                    classes = []
+                    classes = [""]
                     nclasses = []
-                    for html_elem in child.descendants:
-                        if html_elem.name == "tr" and len(html_elem.contents) != 11:
-                            classes.append(current_year)
-
-                        elif html_elem.name == "td":
-                            table_entry = unicodedata.normalize("NFKD", html_elem.text)
-                            table_entry = table_entry.strip()
-                            if (table_entry not in year and len(classes) % 5 != 1):
-                                classes.append(table_entry)
-
+                    row = []
+                    for g in child.descendants:
+                        if g.name == "tr" and len(g.contents) != 11:
+                            classes.append(currentyear)
+                        elif g.name == "td":
+                            t = unicodedata.normalize("NFKD", g.text)
+                            t = t.strip()
+                            if (t not in year and len(classes) % 5 != 1):
+                                classes.append(t)
                             else:
                                 if (t in year):
-                                    current_year = table_entry
-                                classes.append(current_year)
-
-                    row = [] 
+                                    currentyear=t
+                                    
+                                classes.append(currentyear)
+                        
+                    classes = classes[1:]
                     for entry in classes:
                         if len(row) == 5:
                             nclasses.append(row)
@@ -70,11 +66,6 @@ with open('planners.csv', 'w', newline='') as csvfile:
                         row.append(entry)
                     
                     for r in nclasses:
-                        #if r == first_row:
-                            #print(counter)
-                            #plannerwriter.writerow([counter])
-                            #counter +=1
-                        #print(json.dumps(r))
                         plannerwriter.writerow(r)
                     currentyear = ''
             break
