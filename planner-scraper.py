@@ -3,8 +3,6 @@ from bs4 import BeautifulSoup
 import csv
 import unicodedata
 
-PROXY = None
-
 def write_major_name(csvwriter, elem, major_link):
     for tag in elem:
         if "B.S." in tag.text or "B.A." in tag.text or "B.M." in tag.text:
@@ -113,24 +111,25 @@ linkpt1 = 'https://catalog.ucsc.edu/en/'
 linkpt2 = '/general-catalog/academic-programs/bachelors-degrees/'
 
 #year_options = ['current', '2022-2023', '2021-2022', '2020-2021', '2019-2020']
-year = 'current'
+year = '2022-2023'
 csvfilename = 'planners_' + year + '.csv'
 
 def main():
     with open(csvfilename, 'w', newline='') as csvfile:
         planner_writer = csv.writer(csvfile)
         url = concat_link([linkpt1, year, linkpt2])
-        soup = get_soup(url, PROXY)
+        soup = get_soup(url, '54.176.57.64:3128')
 
         main = soup.find_all("a")
         for child in main:
             partial_link = str(child.get('href'))
             if ((year + '/General-Catalog/Academic-Units') in partial_link or (year + '/general-catalog/academic-units') in partial_link):
                 major_link = concat_link([linkpt1, partial_link[4:]])
-
-                soup = get_soup(major_link, PROXY)
+                print(major_link)
+                soup = get_soup(major_link.lower(), '54.176.57.64:3128')
                 main = soup.find("div", {"id":"main"})
-                write_major_name(planner_writer, main, major_link)
+                if main!= None:
+                    write_major_name(planner_writer, main, major_link)
                 
                 page_nums = ["2", "3", "4", "5", "6"]
                 for num in page_nums:
