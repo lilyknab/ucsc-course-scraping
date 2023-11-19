@@ -110,23 +110,27 @@ def get_soup(link, proxy_server):
 linkpt1 = 'https://catalog.ucsc.edu/en/'
 linkpt2 = '/general-catalog/academic-programs/bachelors-degrees/'
 
-#year_options = ['current', '2022-2023', '2021-2022', '2020-2021', '2019-2020']
-year = '2022-2023'
+#year_options = ['current', '2022-2023', '2021-2022', '2020-2021']
+year = '2020-2021'
 csvfilename = 'planners_' + year + '.csv'
 
 def main():
     with open(csvfilename, 'w', newline='') as csvfile:
         planner_writer = csv.writer(csvfile)
         url = concat_link([linkpt1, year, linkpt2])
-        soup = get_soup(url, '54.176.57.64:3128')
+        soup = get_soup(url, PROXY)
 
         main = soup.find_all("a")
+        print(url, main == None)
         for child in main:
+            
             partial_link = str(child.get('href'))
-            if ((year + '/General-Catalog/Academic-Units') in partial_link or (year + '/general-catalog/academic-units') in partial_link):
+            
+            if ((year + '/General-Catalog/Academic-Units') in partial_link or (year + '/general-catalog/academic-units') in partial_link.lower()):
+                print(partial_link)
                 major_link = concat_link([linkpt1, partial_link[4:]])
                 print(major_link)
-                soup = get_soup(major_link.lower(), '54.176.57.64:3128')
+                soup = get_soup(major_link.lower(), PROXY)
                 main = soup.find("div", {"id":"main"})
                 if main!= None:
                     write_major_name(planner_writer, main, major_link)
