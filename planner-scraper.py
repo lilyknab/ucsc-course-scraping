@@ -13,7 +13,7 @@ def write_major_name(csvwriter, elem, major_link):
             major_name = crum_elements[-1]
             major_name = major_name.strip()
             csvwriter.writerow([catalog_year, major_name, major_link])
-            print(major_name)
+            print('scraping', major_name)
             break
     
 def set_planner_constants(row_len):
@@ -121,15 +121,12 @@ def main():
         soup = get_soup(url, PROXY)
 
         main = soup.find_all("a")
-        print(url, main == None)
         for child in main:
             
             partial_link = str(child.get('href'))
             
             if ((year + '/General-Catalog/Academic-Units') in partial_link or (year + '/general-catalog/academic-units') in partial_link.lower()):
-                print(partial_link)
                 major_link = concat_link([linkpt1, partial_link[4:]])
-                print(major_link)
                 soup = get_soup(major_link.lower(), PROXY)
                 main = soup.find("div", {"id":"main"})
                 if main!= None:
