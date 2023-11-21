@@ -14,7 +14,7 @@ def write_major_name(csvwriter, elem, major_link):
             major_name = major_name.strip()
             csvwriter.writerow([catalog_year, major_name, major_link])
             print('scraping', major_name)
-            break
+            return major_name
     
 def set_planner_constants(row_len):
     max_row_len = 0
@@ -22,9 +22,11 @@ def set_planner_constants(row_len):
     if row_len == 11:
         max_row_len = 5
         max_row_contents = row_len
-    else:
+    elif row_len == 9:
         max_row_len = 4
         max_row_contents = row_len
+    else:
+        return 0, 0
     return max_row_len, max_row_contents
 
 def get_match(string, substrings):
@@ -54,6 +56,8 @@ def get_planner_elements(child):
             row_len = len(g.contents)
             if max_row_len == 0:
                 max_row_len, max_row_contents = set_planner_constants(row_len)
+            if max_row_len == 0 and max_row_contents == 0:
+                return [], 0
             if row_len != max_row_contents:
                 classes.append(current_year)
         elif g.name == "td" or g.name == "th":
@@ -70,23 +74,29 @@ def divide_planner_elements(classes, row_len):
         row.append(entry)
     return divided_classes
 
-def write_planner_elements(csvwriter, divided_classes):
-    for r in divided_classes:
-        csvwriter.writerow(r)
+def write_planner_elements(csvwriter, planner_name, divided_classes):
+    if divided_classes != []:
+        csvwriter.writerow([planner_name])
+        for r in divided_classes:
+            csvwriter.writerow(r)
 
-def scrape_planners(csvwriter, soup_parent):
+def scrape_planners(csvwriter, soup_parent, major_name, planner_counter):
+    planner_num = planner_counter
     for tag in soup_parent:
         if tag.name == "h3" and tag.text[4:12] == "Planners":
             next_tag = tag.next_sibling
             for child in next_tag.descendants:
-                if (child.name) == "p" and ("plan" in child.text or "Plan" in child.text):
-                    if (len(child.text) <= 100):
-                        csvwriter.writerow([child.text.strip()])
                 if child.name == "table":
                     classes, row_len = get_planner_elements(child)
-                    divided_classes = divide_planner_elements(classes, row_len)
-                    write_planner_elements(csvwriter, divided_classes)        
+                    if classes != [] and row_len != 0:
+                        divided_classes = divide_planner_elements(classes, row_len)
+                        renamed_divided_classes = rename_rows(divided_classes)
+                        planner_name = "Planner: " + major_name + " Planner " + str(planner_num)
+                        write_planner_elements(csvwriter, planner_name, renamed_divided_classes)
+                        planner_num += 1
+                    
             break
+    return planner_num
 
 def concat_link(link_fragment_list):
     concated_link = ""
@@ -106,19 +116,35 @@ def get_soup(link, proxy_server):
         browser.close()
     return soup
 
+def rename_rows(divided_classes):
+    renamed_divided_classes = []
+    for row in divided_classes:
+        if '1' in row[0] or 'frosh' in row[0]:
+            row[0] = '1'
+            renamed_divided_classes.append(row)
+        elif '2' in row[0] or 'soph' in row[0]:
+            row[0] = '2'
+            renamed_divided_classes.append(row)
+        elif '3' in row[0] or 'junior' in row[0]:
+            row[0] = '3'
+            renamed_divided_classes.append(row)
+        elif '4' in row[0] or 'senior' in row[0]:
+            row[0] = '4'
+            renamed_divided_classes.append(row)
+    return renamed_divided_classes
 
 linkpt1 = 'https://catalog.ucsc.edu/en/'
 linkpt2 = '/general-catalog/academic-programs/bachelors-degrees/'
 
 #year_options = ['current', '2022-2023', '2021-2022', '2020-2021']
-year = '2020-2021'
-csvfilename = 'planners_' + year + '.csv'
+year = 'current'
+csvfilename = 'planners_new_' + year + '.csv'
 
 def main():
     with open(csvfilename, 'w', newline='') as csvfile:
         planner_writer = csv.writer(csvfile)
         url = concat_link([linkpt1, year, linkpt2])
-        soup = get_soup(url, PROXY)
+        soup = get_soup(url, '54.176.57.64:3128')
 
         main = soup.find_all("a")
         for child in main:
@@ -127,16 +153,17 @@ def main():
             
             if ((year + '/General-Catalog/Academic-Units') in partial_link or (year + '/general-catalog/academic-units') in partial_link.lower()):
                 major_link = concat_link([linkpt1, partial_link[4:]])
-                soup = get_soup(major_link.lower(), PROXY)
+                soup = get_soup(major_link.lower(), '54.176.57.64:3128')
                 main = soup.find("div", {"id":"main"})
                 if main!= None:
-                    write_major_name(planner_writer, main, major_link)
+                    major_name = write_major_name(planner_writer, main, major_link)
                 
+                planner_counter = 1
                 page_nums = ["2", "3", "4", "5", "6"]
                 for num in page_nums:
                     parent = soup.find("div", {"id":"degree-req-"+num})
                     if parent != None:
-                        scrape_planners(planner_writer, parent)
+                        planner_counter = scrape_planners(planner_writer, parent, major_name, planner_counter)
                     else:
                         break
 
